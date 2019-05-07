@@ -23,22 +23,30 @@
 }
 
 - (XZViewModel*)viewModelForIndexPath:(NSIndexPath*)indexPath{
-	if (indexPath.row >= [self.store objectsCount]) {
-		return nil;
-	}
-	NSUInteger reversedIndex = [self.store objectsCount] - (indexPath.row + 1);
-	XZEventHistoryElement *eventHistoryElement = [self.store objectWithId:@(reversedIndex)];
-	NSString *eventTimestamp = [NSDateFormatter localizedStringFromDate:eventHistoryElement.timestamp dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterLongStyle];
-	XZViewModel *viewModel = [[XZViewModel alloc] initWithKey:eventTimestamp  value:nil shouldShowDisclosureIndicator:YES];
-	return viewModel;
+    if (indexPath.row >= [self.store objectsCount]) {
+        return nil;
+    }
+    NSUInteger reversedIndex = [self reversedIndexForIndexPath:indexPath];
+    XZEventHistoryElement *eventHistoryElement = [self.store objectWithId:@(reversedIndex)];
+    NSString *eventTimestamp = [NSDateFormatter localizedStringFromDate:eventHistoryElement.timestamp dateStyle:NSDateFormatterShortStyle timeStyle:NSDateFormatterLongStyle];
+    XZViewModel *viewModel = [[XZViewModel alloc] initWithKey:eventTimestamp  value:nil shouldShowDisclosureIndicator:YES];
+    return viewModel;
 }
 
 - (id)rawDataForIndexPath:(NSIndexPath*)indexPath{
-	if (indexPath.row >= [self.store objectsCount]) {
-		return nil;
-	}
-	XZEventHistoryElement *eventHistoryElement = [self.store objectWithId:@(indexPath.row)];
-	id data = eventHistoryElement.data;
-	return data;
+    if (indexPath.row >= [self.store objectsCount]) {
+        return nil;
+    }
+    
+    NSUInteger reversedIndex = [self reversedIndexForIndexPath:indexPath];
+    XZEventHistoryElement *eventHistoryElement = [self.store objectWithId:@(reversedIndex)];
+    
+    id data = eventHistoryElement.data;
+    return data;
 }
+
+- (NSUInteger)reversedIndexForIndexPath:(NSIndexPath *)indexPath {
+    return [self.store objectsCount] - (indexPath.row + 1);
+}
+
 @end
